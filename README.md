@@ -1,9 +1,9 @@
 # Hand Skeleton Gesture Recognition with DD-Net
 
-Source: 
+Source Repo: 
 https://github.com/fandulu/DD-Net
 
-Paper:
+Source Paper:
 @inproceedings{yang2019ddnet,
   title={Make Skeleton-based Action Recognition Model Smaller, Faster and Better},
   author={Fan Yang, Sakriani Sakti, Yang Wu, and Satoshi Nakamura},
