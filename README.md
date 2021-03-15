@@ -2,6 +2,8 @@
 
 Source: 
 https://github.com/fandulu/DD-Net
+
+Paper:
 @inproceedings{yang2019ddnet,
   title={Make Skeleton-based Action Recognition Model Smaller, Faster and Better},
   author={Fan Yang, Sakriani Sakti, Yang Wu, and Satoshi Nakamura},
