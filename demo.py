@@ -15,6 +15,10 @@ from read_model import getModel
 mp_drawing = mp.solutions.drawing_utils
 mp_hands = mp.solutions.hands
 
+movements = {0: "Grab", 1: "Tap", 2: "Expand", 3: "Pinch", 4: "Rotation Clockwise", 5: "Rotation Counter-Clockwise",
+             6: "Swipe Right", 7: "Swipe Left", 8: "Swipe Up", 9: "Swipe Down", 10: "Swipe X", 11: "Swipe +",
+             12: "Swipe V", 13: "Shake"}
+
 
 # convert marks to coordinates
 def mark_to_coord(input_marks):
@@ -53,7 +57,7 @@ def print_result(handedness, marks, frames):
     index, max_val = make_prediction(frames)
     if max_val > 0.5:
         print("Handedness: " + handedness)
-        print("Movement: " + str(index))
+        print("Movement: " + movements[index])
         print("Probability: " + str(max_val))
 
     return frames
