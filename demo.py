@@ -51,7 +51,8 @@ def print_result(handedness, marks, frames):
     # get coordinate
     coord = mark_to_coord(marks)
     # insert into frame
-    frames = np.roll(left_frames, -66)
+    #frames = np.roll(left_frames, -66)
+    frames = np.roll(frames, -66)
     frames[-1, :, :] = coord
     # predict and print the result
     index, max_val = make_prediction(frames)
@@ -60,7 +61,8 @@ def print_result(handedness, marks, frames):
         print("Movement: " + movements[index])
         print("Probability: " + str(max_val))
 
-    return frames
+
+    return frames,index
 
 
 # For webcam input:
@@ -87,6 +89,10 @@ with mp_hands.Hands(
         # the BGR image to RGB.
         image = cv2.cvtColor(cv2.flip(image, 1), cv2.COLOR_BGR2RGB)
 
+        # describe the type of font
+        # to be used.
+        font = cv2.FONT_HERSHEY_SIMPLEX
+
         # To improve performance, optionally mark the image as not writeable to
         # pass by reference.
         image.flags.writeable = False
@@ -103,17 +109,24 @@ with mp_hands.Hands(
                 # left hand only
                 if handedness == "Left":
                     # update left frame
-                    left_frames = print_result("Left", marks, left_frames)
+                    left_frames,index = print_result("Left", marks, left_frames)
                     # roll out one frame for right hand
                     right_frames = np.roll(right_frames, -66)
                     right_frames[-1, :, :] = np.zeros((22, 3))
+                    cv2.putText(image, "Left:"+ (movements[index]), (50, 50), font, 1, (0, 255, 255), 2, cv2.LINE_4)
+
                 # right hand only
                 else:
                     # update right frame
-                    right_frames = print_result("Right", marks, right_frames)
+                    right_frames,index2 = print_result("Right", marks, right_frames)
                     # roll out one left frame
                     left_frames = np.roll(left_frames, -66)
                     left_frames[-1, :, :] = np.zeros((22, 3))
+                    cv2.putText(image, "Right:"+(movements[index]), (50, 50), font, 1, (0, 255, 255), 2, cv2.LINE_4)
+
+                # Use putText() method for
+                # inserting text on video
+
             # both hands
             else:
                 first_marks = results.multi_hand_landmarks[0].landmark
@@ -123,11 +136,23 @@ with mp_hands.Hands(
 
                 # update both frames
                 if first_handedness == "Left":
-                    left_frames = print_result("Left", first_marks, left_frames)
-                    right_frames = print_result("Right", second_marks, right_frames)
+                    left_frames,index = print_result("Left", first_marks, left_frames)
+                    right_frames,index2 = print_result("Right", second_marks, right_frames)
+
+                    cv2.putText(image, ("left: " + movements[index]), (50, 50), font, 1, (0, 255, 255), 2, cv2.LINE_4)
+                    cv2.putText(image, ("right: " + movements[index2]), (50, 100), font, 1, (0, 255, 255), 2,
+                                cv2.LINE_4)
+
                 else:
-                    right_frames = print_result("Right", first_marks, right_frames)
-                    left_frames = print_result("Left", second_marks, left_frames)
+                    right_frames,index2 = print_result("Right", first_marks, right_frames)
+                    left_frames,index = print_result("Left", second_marks, left_frames)
+
+                    # Use putText() method for
+                    # inserting text on video
+                    cv2.putText(image, ("left: "+movements[index]), (50, 50), font, 1, (0, 255, 255), 2, cv2.LINE_4)
+                    cv2.putText(image, ("right: "+movements[index2]), (50, 100), font, 1, (0, 255, 255), 2, cv2.LINE_4)
+
+
         # no hand detected
         else:
             # roll out one frame for both frames
@@ -139,6 +164,7 @@ with mp_hands.Hands(
         # Draw the hand annotations on the image.
         image.flags.writeable = True
         image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+
         if results.multi_hand_landmarks:
             for hand_landmarks in results.multi_hand_landmarks:
                 mp_drawing.draw_landmarks(
