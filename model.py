@@ -139,8 +139,8 @@ class Config:
         self.clc_coarse = 14  # the number of coarse class
         self.clc_fine = 28  # the number of fine-grained class
         self.feat_d = 231
-        self.filters = 16  # ?? In the python notebook is 64, here is 16...
-        self.data_dir = '/content/SHREC'
+        self.filters = 64  # ?? In the python notebook is 64, here is 16...
+        self.data_dir = 'SHREC'
 C = Config()
 
 def poses_diff(x):
